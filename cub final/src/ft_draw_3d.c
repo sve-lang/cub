@@ -86,10 +86,7 @@ void ft_create_bmp(t_info *arg) // 14 lines
 
 	size = (arg->res[0]* arg->res[1] * 4) + 54;
 	if(!(bmp = (char *)malloc(size)))
-	{
-		ft_putstr("malloc to bmp is error");
-		return ;
-	}
+		ft_error("Error! Failed to allocate memory.\n", arg, 65307);
 	ft_fill_bmp(bmp, 54, size, arg);
 	fd = open("cub.bmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	write(fd, bmp, size);

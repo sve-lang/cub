@@ -70,7 +70,7 @@ int ft_check_main_arguments(int argc, char **argv) // 25 lines
 		return (-1);
 	}
 	name_map = ft_substr(argv[1], ft_strlen(argv[1])- 4,  4);
-	if (ft_strncmp(name_map, ".cub", 5) != 0) // рассмотреть вариант двойного расширения 
+	if (ft_strncmp(name_map, ".cub", 5) != 0) 
 	{
 		free(name_map);
 		ft_putstr("Error. the wrong file extension\n");
@@ -114,7 +114,6 @@ void free_double_array (int **arr, int height)
 		free(arr[j]);
 		j++;
 	}
-	printf("j = %d\n", j);
 	free(arr);
 }
 void free_map(char **arr, int h)
@@ -126,7 +125,6 @@ void free_map(char **arr, int h)
 		free(arr[j]);
 		j++;
 	}
-	//printf("j = %d\n", j);
 	free(arr);
 }
 int clean_memory(t_info *arg)
@@ -162,25 +160,35 @@ int clean_memory(t_info *arg)
 			free(ptr);
 		}
 	}
-	//free(arg->cub.mlx);
-	
 	return (0);
-
 }
 int exit_game(int key, t_info *arg)
 {
-	ft_putstr("Game is over!\n");
+	
+	if (key != 0000)
+		ft_putstr("Game is over!\n");
+	//printf ("1111\n");
 	if (key == 65307)
 	{
 		mlx_destroy_image(arg->cub.mlx, arg->cub.img);
 		if(arg->cub.win)
 			mlx_destroy_window(arg->cub.mlx, arg->cub.win);
+	}
+	//printf ("2222\n");
+	if (arg != NULL)
+	{
+		//printf ("3333\n");
 		clean_memory(arg);
 	}
 	exit(0);
 	return (0);
 }
 
+void ft_error(char *str, t_info *arg, int mistake)
+{
+	ft_putstr(str);
+	exit_game(mistake, arg);
+}
 int main(int argc, char **argv) // 23 lines
 {
 	t_info arg;
@@ -192,7 +200,7 @@ int main(int argc, char **argv) // 23 lines
 		flag = 1;
 	arg = ft_init_info(flag);	
 	if (ft_read_file(argv[1], &arg, flag) == -1)
-		return (0);
+		exit_game(00000, NULL);
 	arg.cub.mlx = mlx_init();
 	if (flag != 1)
 		arg.cub.win = mlx_new_window(arg.cub.mlx, arg.res[0], arg.res[1], "CUB3D");
@@ -205,7 +213,6 @@ int main(int argc, char **argv) // 23 lines
 	mlx_hook(arg.cub.win, 2, (1L << 0), ft_keypress, &arg);
 	mlx_hook(arg.cub.win, 17, 1L << 17, exit_game, &arg);
 	mlx_loop(arg.cub.mlx);
-	if (arg.map != NULL)
-		free_map(arg.map, arg.mp); 
+	
 	return (0);
 }

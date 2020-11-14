@@ -54,12 +54,6 @@ typedef struct s_player
 	double end;
 }		t_player;
 
-typedef struct s_map
-{
-	char *line;
-	struct s_map *next;
-}	t_map;
-
 typedef struct s_texture
 {
 	int **north_tex; //free
@@ -108,6 +102,14 @@ typedef struct s_paint
 	int floor;
 	int cell;
 }				t_paint;
+
+typedef struct	s_map
+{
+	char *map;
+	int x;
+	int y;
+}				t_map;
+
 typedef struct s_info
 {
 	int res[2];
@@ -151,7 +153,7 @@ t_sprite **ft_unite_sprite(t_sprite *sprt, int n, t_info *arg);
 void ft_create_sprite(int x, int y, t_info *arg);
 void ft_find_sprites(t_info *arg);
 void ft_parse_map(char *line, int n, t_info *arg);
-int **ft_parse_texture (char *path);
+int **ft_parse_texture (char *path, t_info *arg);
 t_player ft_find_player(t_info *arg);
 void	ft_sort_sprite(t_info *arg, int i);
 int		ft_get_color(t_info *arg, double h, double w);
@@ -169,12 +171,13 @@ int ft_read_file(char *filename, t_info *arg, int flag);
 void ft_moveupdown(t_info *arg, int key);
 void ft_moverightleft(t_info *arg, int key);
 double ft_find_dist(t_info *arg, t_cross cr, double *x1, double *y1);
-int **ft_add_memory(int height, int width, int *arr_addr, int k);
+int **ft_add_memory(int height, int width, int *arr_addr, int k, t_info *arg);
 void ft_check_map4(char **map, t_info *arg, int i, int j);
 void ft_init_player(t_player *player, char c, double x, double y);
 void ft_fill_bmp(char *bmp, int num, int size, t_info *arg);
 void free_map(char **arr, int h);
 int exit_game(int key, t_info *arg);
+void ft_error(char *str, t_info *arg, int mistake);
 int main(int argc, char **argv);
 
 

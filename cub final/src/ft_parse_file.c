@@ -19,6 +19,11 @@ void ft_get_resolution(char *line, t_info *arg, int n) // 24 lines
 	{
 		if (ft_isdigit(*line) > 0)
 		{
+			if (n == 2)
+			{
+				n++;
+				break;
+			}
 			if ((arg->res[n] = ft_atoi(line)) < 0)
 			{
 				ft_putstr("Error. Negative value of resolution\n");
@@ -27,12 +32,15 @@ void ft_get_resolution(char *line, t_info *arg, int n) // 24 lines
 			line = line + findlen(arg->res[n]) - 1;
 			n++;
 		}
-		if (n > 2 )
-		{
-			ft_putstr("Error. Too many values of resolution\n");
-			arg->error = 1;
-		}
+		
+		
 		line++;
+	}
+	if (n != 2 )
+	{
+		ft_putstr("Error. Too many values of resolution\n");
+		arg->error = 1;
+		return ;
 	}
 	if (arg->res[0] > 1920) 
 		arg->res[0] = 1920;
@@ -50,10 +58,7 @@ char  *ft_get_path(char *line, t_info *arg) // 11 lines
 		line++;
 	len = ft_strlen(line);
 	if(!(str = (char *)malloc(sizeof(char)*len+1)))
-	{
-		printf("Error! Problems with memory allocation");
-		arg->error = 1;
-	}
+		ft_error("Error! Failed to allocate memory.\n", arg, 0000);
 	ft_memcpy(str, line, len+1);
 	return (str);
 }
@@ -77,13 +82,13 @@ void ft_get_floor(char *line, t_info *arg) //25 lines
 			line = line + findlen(arg->floor[n]) - 1;
 			n++;
 		}
-		if (n > 3 )
+			line++;
+	}
+		if (n != 3 )
 		{
 			ft_putstr("Error. too many arguments of floor's color\n");
 			arg->error = 1;
-			break;
-		}
-			line++;
+			return;
 		}
 }
 
@@ -106,13 +111,15 @@ void ft_get_celling(char *line, t_info *arg) //25 lines
 			line = line + findlen(arg->cel[n]) - 1;
 			n++;
 		}
-		if (n > 3 )
-		{
-			ft_putstr("Error. too many arguments of celling's color\n");
-			arg->error = 1;
-			break;
-		}
+
 		line++;
+		
+	}
+	if (n != 3 )
+	{
+		ft_putstr("Error. too many arguments of celling's color\n");
+		arg->error = 1;
+		return ;
 	}
 }
 int ft_check_arg(char c) // 6 lines
@@ -147,23 +154,19 @@ void ft_parse_file2(t_info *arg, char *line) // 19 lines
 void ft_destribute_text(t_info *arg) //18 lines
 {
 	if (arg->north == NULL || arg->south == NULL || arg->west == NULL || arg->east == NULL)
-	{
-		ft_putstr("Error. one of the texture is missing/n");
-		arg->error = 1;
-		return ;
-	}
-	if ((arg->text.north_tex = ft_parse_texture(arg->north)) == NULL)
-		arg->error = 1;
-	if ((arg->text.south_tex = ft_parse_texture(arg->south)) == NULL)
-		arg->error = 1;
-	if ((arg->text.west_tex = ft_parse_texture(arg->west)) == NULL)
-		arg->error = 1;
-	if ((arg->text.east_tex = ft_parse_texture(arg->east)) == NULL)
-		arg->error = 1;
+		ft_error("Error. one of the texture is missing\n", arg, 0);
+	if ((arg->text.north_tex = ft_parse_texture(arg->north, arg)) == NULL)
+		ft_error("Error reading noth texture\n", arg, 0);
+	if ((arg->text.south_tex = ft_parse_texture(arg->south, arg)) == NULL)
+		ft_error("Error reading south texture\n", arg, 0);
+	if ((arg->text.west_tex = ft_parse_texture(arg->west, arg)) == NULL)
+		ft_error("Error reading west texture\n", arg, 0);
+	if ((arg->text.east_tex = ft_parse_texture(arg->east, arg)) == NULL)
+		ft_error("Error reading east texture\n", arg,0);
 	if (arg->sprite != NULL)
 	{
 		if((arg->text.sprite = ft_parse_sprite(arg->sprite, arg)) == NULL)
-		arg->error = 1;
+			ft_error("Error reading sprite\n", arg, 0);
 	}
 }
 void ft_parse_file(t_info *arg, int fd) //21 lines

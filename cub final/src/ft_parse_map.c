@@ -16,24 +16,24 @@ void ft_parse_map(char *line, int n, t_info *arg)//возможна утечка
 {
 	char **arr;
 	int i;
-
+	arr = arg->map;
 	i = 0;
-	arr = (char **)malloc(sizeof(char *)*(n+1)+1);
-	
-		while (i < n)
-		{
-			arr[i]= (char *)malloc(sizeof(char)* ft_strlen(arg->map[i])+1);
-			ft_memcpy(arr[i], arg->map[i], ft_strlen(arg->map[i])+1);
-			i++;
-		}
-		arr[n] = (char *)malloc(sizeof(char) * ft_strlen(line)+1);
-		ft_memcpy(arr[n], line, ft_strlen(line));
-		arr[n][ft_strlen(line)] = '\0';
-	
-	free_map(arg->map, n);
-	arg->map = arr;
+	if (!(arg->map = (char **)malloc(sizeof(char *)*(n+1))))
+		ft_error("Error! Failed to allocate memory.\n", arg, 0000);
+	while (i < n)
+	{
+		if (!(arg->map[i]= (char *)malloc(sizeof(char)* ft_strlen(arr[i])+1)))
+			ft_error("Error! Failed to allocate memory.\n", arg, 0);
+		ft_memcpy(arg->map[i], arr[i], ft_strlen(arr[i])+1);
+		i++;
+	}
+	if (!(arg->map[n] = (char *)malloc(sizeof(char) * ft_strlen(line)+1)))
+		ft_error("Error! Failed to allocate memory.\n", arg, 0);
+	ft_memcpy(arg->map[n], line, ft_strlen(line)+1);
+	arg->map[n][ft_strlen(line)] = '\0';
+	free_map(arr, n);
 } 
-int **ft_add_memory(int height, int width, int *arr_addr, int k) //23 line
+int **ft_add_memory(int height, int width, int *arr_addr, int k, t_info *arg) //23 line
 {
 	int **arr_text;
 	int i;
@@ -41,10 +41,12 @@ int **ft_add_memory(int height, int width, int *arr_addr, int k) //23 line
 
 	j = 0;
 	i = 0;	
-	arr_text = (int **)malloc(sizeof(int *) * height);
+	if (!(arr_text = (int **)malloc(sizeof(int *) * height)))
+		ft_error("Error! Failed to allocate memory.\n", arg, 0);
 	while (i < height)
 	{
-		arr_text[i]= (int *)malloc(sizeof(int) * width);
+		if (!(arr_text[i]= (int *)malloc(sizeof(int) * width)))
+			ft_error("Error! Failed to allocate memory.\n", arg, 0);
 		i++;
 	}
 	while(j < height)
@@ -60,7 +62,7 @@ int **ft_add_memory(int height, int width, int *arr_addr, int k) //23 line
 	}
 	return (arr_text);
 }
-int **ft_parse_texture (char *path) // 13 lines
+int **ft_parse_texture (char *path, t_info *arg) // 13 lines
 {
 	int **arr_text;
 	int *arr_addr;
@@ -70,13 +72,9 @@ int **ft_parse_texture (char *path) // 13 lines
 
 	img.mlx = mlx_init();
 	if (!(img.img = mlx_xpm_file_to_image(img.mlx, path, &img_width, &img_height)))
-		{
-			ft_putstr("Error. wrong path to texture\n");
-			return (NULL);
-
-		}
+		ft_error("Error! wrong path to texture\n", arg, 0);
 	arr_addr = (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.length, &img.endian);
-	arr_text = ft_add_memory(img_height, img_width, arr_addr, 0); 
+	arr_text = ft_add_memory(img_height, img_width, arr_addr, 0, arg); 
 	mlx_destroy_image(img.mlx, img.img);
 	free(img.mlx);
 	//free(img.img);
