@@ -1,0 +1,16 @@
+R 1920 1080;
+NO ./textures/wall.xpm
+SO ./textures/wall1.xpm
+
+WE ./textures/wall3.xpm
+EA ./textures/wer.xpm
+
+S ./textures/ded.xpm
+F 220,100,0
+C 225,30,0
+
+1111
+1001
+1N01
+1111
+
