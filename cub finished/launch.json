@@ -1,0 +1,1 @@
+gcc -o cub3D main.c get_next_line.c libft.a -L /home/jrosemar/minilibx-linux/ -lmlx -lX11 -lXext -lm
